@@ -1,4 +1,4 @@
 # hive_tests
 - Main decryption algorithm: decrypt.py
-- Block size calculation: helper function for main algorithm
-- Keystream offsets calculation: helper function for main algorithm
+- Block size calculation: calculate_block_size.py
+- Keystream offsets calculation: calculate_offsets.py
