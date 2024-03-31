@@ -5,8 +5,8 @@ import os
 
 #print("Calculating data block size of file: " + file + "...")
 
-def calculate_block_size(file_name):
-    file_size = os.path.getsize(file_name)
+def calculate_block_size(file_path):
+    file_size = os.path.getsize(file_path)
     nbs = 0
 
     if file_size <= 0x1000:

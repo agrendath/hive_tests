@@ -23,10 +23,9 @@ for file in os.listdir(path=original_files_dir):
     infected = getInfectedFileFromOriginal(infected_files, file)
     
     # Main algorithm
-    nbs = calculate_block_size(file)
+    nbs = calculate_block_size(infected_files_dir + "/" + file)
     sp1, sp2 = calculate_start_offsets(file)  # stores sp1 and sp2 in hex
 
     size = os.path.getsize(file)
     iter = size//(0x1000 + nbs)
     offset = 0
-    
