@@ -1,3 +1,4 @@
 # hive_tests
-- Block size calculation: "python3 calculate_block_size.py file.txt"
-- Keystream offsets calculation: "python3 calculate_start_offsets.py filename.txt.aoshdaouehdauehdad.hive"
+- Main decryption algorithm: decrypt.py
+- Block size calculation: helper function for main algorithm
+- Keystream offsets calculation: helper function for main algorithm
