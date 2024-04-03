@@ -15,10 +15,10 @@ original_files_dir = "original_files"
 
 # Get a list of all the infected (encrypted) files
 infected_files = [file for file in os.listdir(path=infected_files_dir) if os.path.isfile(file)]
-original_files_dir = [file for file in os.listdir(path=original_files_dir) if os.path.isfile(file)]
+original_files = [file for file in os.listdir(path=original_files_dir) if os.path.isfile(file)]
 
 # Iterate over the original files
-for original_file in original_files_dir:
+for original_file in original_files :
     # Get the corresponding infected (encrypted) file
     infected_file = getInfectedFileFromOriginal(infected_files, original_file)
     
@@ -55,5 +55,5 @@ while len(EQS) == sentinelle:
             EK[EQ[1]] = EK[EQ[0]] ^ EK[EQ[2]]      
         elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
             EK[EQ[0]] = EK[EQ[1]] ^ EK[EQ[2]]      
-        elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) != None):
+        elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             EQS.pop(EQ)
