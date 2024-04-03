@@ -10,8 +10,7 @@ def calculate_block_size(file_path):
     nbs = 0
 
     if file_size <= 0x1000:
-        print(nbs)
-        exit()
+        return nbs
     elif file_size < 0x20000:
         r = file_size >> 12
     elif file_size < 0x100000:
@@ -26,9 +25,12 @@ def calculate_block_size(file_path):
         r = ((file_size >> 12)*1)//100
 
     if r == 1:
-        print(nbs)
-        exit()
+        return nbs
 
     nbs = (file_size - (r << 12))//(r - 1)
 
     return nbs
+
+# calculate block size for the file decrypt.py
+tmp = calculate_block_size("C:\\Users\\antho\\Downloads\\ova-20240401T121536Z-001.zip")
+print(tmp)
