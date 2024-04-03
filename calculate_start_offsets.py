@@ -3,7 +3,6 @@ import base64
 from base64 import urlsafe_b64encode
 
 def calculate_start_offsets(file_name):
-    #r = base64.urlsafe_b64decode(file_name + '=' * (4 - len(file_name) % 4))[16:]
     r = base64.urlsafe_b64decode(file_name)[16:]
     r1 = int.from_bytes(r[:8], "little")
     r2 = int.from_bytes(r[8:], "little")
@@ -12,6 +11,3 @@ def calculate_start_offsets(file_name):
 
     return (hex(sp1), hex(sp2))
 
-name = b'b3ZhLTIwMjQwNDAxVDEyMTUzNlotMDAxLnppcA=='
-tmp = calculate_start_offsets(name)
-print(tmp)

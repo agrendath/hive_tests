@@ -30,7 +30,3 @@ def calculate_block_size(file_path):
     nbs = (file_size - (r << 12))//(r - 1)
 
     return nbs
-
-# calculate block size for the file decrypt.py
-tmp = calculate_block_size("C:\\Users\\antho\\Downloads\\ova-20240401T121536Z-001.zip")
-print(tmp)
