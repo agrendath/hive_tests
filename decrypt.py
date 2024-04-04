@@ -32,7 +32,11 @@ for original_file in original_files :
     EQS = {}
     for i in range (iter+1):
         if i == iter :
-            offset = ...
+            ## From paper:
+            ## If the last block size is more than 0x1000 bytes, 0x1000 bytes of the last block
+            ## starting from the end of the file are encrypted. Otherwise the entire block is encrypted
+            if size - 0x1000 > offset:
+                offset += size - offset - 0x1000
         for j in range(0xFFF +1):
             O1 = offset%0x100000
             O2 = offset%0x1000
