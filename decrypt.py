@@ -3,6 +3,7 @@ from calculate_block_size import calculate_block_size
 from calculate_start_offsets import calculate_start_offsets
 import random 
 import copy
+from os.path import isfile, join
 
 def getInfectedFileFromOriginal(infected_files, original_file):
     for infected_file in infected_files:
@@ -10,15 +11,19 @@ def getInfectedFileFromOriginal(infected_files, original_file):
             return infected_file
     raise "Error_No_Existing_File"
 
-infected_files_dir = "infected_files"
-original_files_dir = "original_files"
+infected_files_dir = "infected_files/"
+original_files_dir = "original_files/"
 
 # Get a list of all the infected (encrypted) files
-infected_files = [file for file in os.listdir(path=infected_files_dir) if os.path.isfile(file)]
-original_files = [file for file in os.listdir(path=original_files_dir) if os.path.isfile(file)]
+infected_files = [file for file in os.listdir(path=infected_files_dir) if isfile(join(infected_files_dir, file))]
+original_files = [file for file in os.listdir(path=original_files_dir) if isfile(join(original_files_dir, file))]
 
+print("Starting decryption process...")
+
+EQS = {}
 # Iterate over the original files
 for original_file in original_files :
+    print("File: " + original_file + "...")
     # Get the corresponding infected (encrypted) file
     infected_file = getInfectedFileFromOriginal(infected_files, original_file)
     
@@ -44,8 +49,12 @@ for original_file in original_files :
             offset += 1
         offset += nbs
 
-EK = [0xA00000 for _ in range(len(EQS))]
-E = copy.deepcopy(list(EQS)[random.randint(0, len(EQS-1))])
+if EQS == {}:
+    print("No EQS found")
+    exit()
+
+EK = [None] * 0xA00000
+E = copy.deepcopy(list(EQS)[random.randint(0, len(EQS) - 1)])
 EK[E[0]] = random.randint(0, 255)
 EQS = tuple(EQS)
 
@@ -61,3 +70,5 @@ while len(EQS) == sentinelle:
             EK[EQ[0]] = EK[EQ[1]] ^ EK[EQ[2]]      
         elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             EQS.pop(EQ)
+
+print(EQS)
