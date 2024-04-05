@@ -23,9 +23,9 @@ print("Starting decryption process...")
 EQS = {}
 # Iterate over the original files
 for original_file in original_files :
-    print("File: " + original_file + "...")
     # Get the corresponding infected (encrypted) file
     infected_file = getInfectedFileFromOriginal(infected_files, original_file)
+    print("File: " + original_file + " -> " + infected_file + "...")
     
     # Main algorithm
     nbs = calculate_block_size(infected_files_dir + "/" + infected_file) ## USING ALGO 1
