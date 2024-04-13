@@ -68,10 +68,11 @@ E = copy.deepcopy(list(EQS)[random.randint(0, len(EQS) - 1)])
 EK[E[0]] = random.randint(0, 255)
 EQS = list(EQS)
 
-sentinelle = len(EQS)
-
+sentinelle = len(EQS) + 1
 result = None
-while len(EQS) == sentinelle:
+
+while not (len(EQS) == sentinelle):
+    sentinelle = len(EQS)
     for EQ in EQS:
         if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
             continue
