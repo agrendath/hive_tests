@@ -110,9 +110,15 @@ for i in range(len(EK)):
 EK_percentage = (EK_percentage/len(EK)) * 100
 print("Percentage of EK acquired:", EK_percentage,"%")
 
-print("Writing EK to file...")
 # Write EK to a file called EK.txt, but only the spaces that are not None
+print("Writing EK to file...")
 with open("EK.txt", "w") as f:
     for i in range(len(EK)):
         if EK[i] != None:
             f.write(str(i) + ": " + str(EK[i]) + "\n")
+
+# Write EQS to a file
+print("Writing EQS to file...")
+with open("EQS.txt", "w") as f:
+    for i in range(len(EQS)):
+        f.write(str(EQS[i]) + "\n")
