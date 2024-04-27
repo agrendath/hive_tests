@@ -7,7 +7,7 @@ from os.path import isfile, join
 
 def getInfectedFileFromOriginal(infected_files, original_file):
     for infected_file in infected_files:
-        if infected_file.startswith(original_file):
+        if infected_file.split("/")[-1].startswith(original_file.split("/")[-1]):
             return infected_file
     raise "Error_No_Existing_File"
 
@@ -15,8 +15,14 @@ infected_files_dir = "infected_files/"
 original_files_dir = "original_files/"
 
 # Get a list of all the infected (encrypted) files
+subdirs = ["21000/", "150000/", "501000/", "1000000/", "5000000/", "10000000/", "1000000000/"]
 infected_files = [file for file in os.listdir(path=infected_files_dir) if isfile(join(infected_files_dir, file))]
 original_files = [file for file in os.listdir(path=original_files_dir) if isfile(join(original_files_dir, file))]
+
+# Add files from all the subdirectories
+for subdir in subdirs:
+    infected_files += [(subdir + file) for file in os.listdir(path=infected_files_dir + subdir) if isfile(join(infected_files_dir + subdir, file))]
+    original_files += [(subdir + file) for file in os.listdir(path=original_files_dir + subdir) if isfile(join(original_files_dir + subdir, file))]
 
 print("Starting decryption process...")
 
@@ -27,20 +33,27 @@ for original_file in original_files :
     infected_file = getInfectedFileFromOriginal(infected_files, original_file)
     print("File: " + original_file + " -> " + infected_file + "...")
 
-    if_content = open(infected_files_dir + "/" + infected_file, "rb").read()
-    of_content = open(original_files_dir + "/" + original_file, "rb").read()
-    print("Length of file: " + str(len(if_content)))
+    if_content = open(infected_files_dir + infected_file, "rb").read()
+    of_content = open(original_files_dir + original_file, "rb").read()
     
-    # Main algorithm
-    nbs = calculate_block_size(infected_files_dir + "/" + infected_file) ## USING ALGO 1
+    # First we run the first algorithm on the full file path
+    nbs = calculate_block_size(infected_files_dir + infected_file) ## USING ALGO 1
+    size = os.path.getsize(infected_files_dir + infected_file)  # Get the size of the file
+
+    # Now we remove the path from the file names so that we can perform operations on the pure file names
+    infected_file = infected_file.split("/")[-1]
+    original_file = original_file.split("/")[-1]
+    #print("Length of file: " + str(len(if_content)))
+    
+    # Now we calculate the start offsets from the file name 
     SP1, SP2 = calculate_start_offsets(infected_file)  # stores sp1 and sp2 in hex ##USING ALGO 2
 
-    size = os.path.getsize(infected_files_dir + "/" + infected_file)
+    # Main algorithm
     iter = size//(0x1000 + nbs)
     offset = 0
     EQS = set()
     for i in range (iter + 1):
-        print("Iteration " + str(i) + "/" + str(iter) + "...")
+        #print("Iteration " + str(i) + "/" + str(iter) + "...")
         if i == iter :
             ## From paper:
             ## If the last block size is more than 0x1000 bytes, 0x1000 bytes of the last block
