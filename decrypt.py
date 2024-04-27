@@ -84,6 +84,7 @@ EQS = list(EQS)
 sentinelle = len(EQS) + 1
 result = None
 
+print("EQS LENGTH BEFORE SOLVE:", len(EQS))
 while not (len(EQS) == sentinelle):
     sentinelle = len(EQS)
     for EQ in EQS:
@@ -98,4 +99,20 @@ while not (len(EQS) == sentinelle):
             EQS.pop(EQS.index(EQ))
 
 print("EQS:", EQS)
+print("EQS Length:", len(EQS))
 print("Popped EQ:", result)
+
+# Calculate which percentage of EK we acquired
+EK_percentage = 0
+for i in range(len(EK)):
+    if EK[i] != None:
+        EK_percentage += 1
+EK_percentage = (EK_percentage/len(EK)) * 100
+print("Percentage of EK acquired:", EK_percentage,"%")
+
+print("Writing EK to file...")
+# Write EK to a file called EK.txt, but only the spaces that are not None
+with open("EK.txt", "w") as f:
+    for i in range(len(EK)):
+        if EK[i] != None:
+            f.write(str(i) + ": " + str(EK[i]) + "\n")
