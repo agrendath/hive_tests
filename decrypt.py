@@ -7,7 +7,9 @@ from os.path import isfile, join
 
 def getInfectedFileFromOriginal(infected_files, original_file):
     for infected_file in infected_files:
-        if infected_file.split("/")[-1].startswith(original_file.split("/")[-1]):
+        infected = infected_file.split("/")[-2] + infected_file.split("/")[-1]
+        original = original_file.split("/")[-2] + original_file.split("/")[-1]
+        if infected.startswith(original):
             return infected_file
     raise "Error_No_Existing_File"
 
@@ -16,8 +18,10 @@ original_files_dir = "original_files/"
 
 # Get a list of all the infected (encrypted) files
 subdirs = ["21000/", "150000/", "501000/", "1000000/", "5000000/", "10000000/", "1000000000/"]
-infected_files = [file for file in os.listdir(path=infected_files_dir) if isfile(join(infected_files_dir, file))]
-original_files = [file for file in os.listdir(path=original_files_dir) if isfile(join(original_files_dir, file))]
+#infected_files = [file for file in os.listdir(path=infected_files_dir) if isfile(join(infected_files_dir, file))]
+#original_files = [file for file in os.listdir(path=original_files_dir) if isfile(join(original_files_dir, file))]
+infected_files = []
+original_files = []
 
 # Add files from all the subdirectories
 for subdir in subdirs:
@@ -39,6 +43,7 @@ for original_file in original_files :
     # First we run the first algorithm on the full file path
     nbs = calculate_block_size(infected_files_dir + infected_file) ## USING ALGO 1
     size = os.path.getsize(infected_files_dir + infected_file)  # Get the size of the file
+    print("Size: " + str(size))
 
     # Now we remove the path from the file names so that we can perform operations on the pure file names
     infected_file = infected_file.split("/")[-1]
@@ -50,10 +55,11 @@ for original_file in original_files :
 
     # Main algorithm
     iter = size//(0x1000 + nbs)
+    print("Will run for " + str(iter) + " iterations (size//0x1000 + nbs) = (size//0x1000 + " + str(nbs) + ")")
     offset = 0
     EQS = set()
     for i in range (iter + 1):
-        #print("Iteration " + str(i) + "/" + str(iter) + "...")
+        print("Iteration " + str(i) + "/" + str(iter) + "...")
         if i == iter :
             ## From paper:
             ## If the last block size is more than 0x1000 bytes, 0x1000 bytes of the last block
@@ -85,22 +91,24 @@ sentinelle = len(EQS) + 1
 result = None
 
 print("EQS LENGTH BEFORE SOLVE:", len(EQS))
+eqs_popped = 0
 while not (len(EQS) == sentinelle):
     sentinelle = len(EQS)
     for EQ in EQS:
         if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
             continue
         elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) == None):
-            EK[EQ[1]] = EK[EQ[0]] ^ int(EK[EQ[2]] or 0)     
+            EK[EQ[1]] = EK[EQ[0]] ^ EQ[2]      # BEFORE: ^ int(EK[EQ[2]] or 0)
         elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
-            EK[EQ[0]] = EK[EQ[1]] ^ int(EK[EQ[2]] or 0)      
+            EK[EQ[0]] = EK[EQ[1]] ^ EQ[2]      # BEFORE: ^ int(EK[EQ[2]] or 0)
         elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             result = EQ
             EQS.pop(EQS.index(EQ))
+            eqs_popped += 1
 
-print("EQS:", EQS)
 print("EQS Length:", len(EQS))
-print("Popped EQ:", result)
+print("Amount of EQ popped:", eqs_popped)
+print("Last popped EQ:", result)
 
 # Calculate which percentage of EK we acquired
 EK_percentage = 0
