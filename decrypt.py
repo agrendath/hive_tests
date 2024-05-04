@@ -98,9 +98,9 @@ while not (len(EQS) == sentinelle):
         if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
             continue
         elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) == None):
-            EK[EQ[1]] = EK[EQ[0]] ^ EQ[2]      # BEFORE: ^ int(EK[EQ[2]] or 0)
+            EK[EQ[1]] = EK[EQ[0]] ^ int(EK[EQ[2]] or 0)      # BEFORE: ^ int(EK[EQ[2]] or 0), AFTER: EK[2]
         elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
-            EK[EQ[0]] = EK[EQ[1]] ^ EQ[2]      # BEFORE: ^ int(EK[EQ[2]] or 0)
+            EK[EQ[0]] = EK[EQ[1]] ^ int(EK[EQ[2]] or 0)      # BEFORE: ^ int(EK[EQ[2]] or 0), AFTER: EK[2]
         elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             result = EQ
             EQS.pop(EQS.index(EQ))
