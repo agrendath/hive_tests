@@ -125,3 +125,17 @@ print("Writing EQS to file...")
 with open("EQS.txt", "w") as f:
     for i in range(len(EQS)):
         f.write(str(EQS[i]) + "\n")
+
+duplicatesFirst = 0
+duplicatesSecond = 0
+seenFirst = list()
+seenSecond = list()
+for element in EQS:
+    if element[0] in seenFirst:
+        duplicatesFirst += 1
+    seenFirst.add(element[0])
+    if element[1] in seenSecond:
+        duplicatesSecond += 1
+    seenSecond.add(element[1])
+print("Nr. of duplicates in first column of EQS:", duplicatesFirst)
+print("Nr. of duplicates in second column of EQS:", duplicatesSecond)
