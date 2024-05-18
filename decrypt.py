@@ -18,8 +18,6 @@ original_files_dir = "original_files/"
 
 # Get a list of all the infected (encrypted) files
 subdirs = ["21000/", "150000/", "501000/", "1000000/", "5000000/", "10000000/", "1000000000/"]
-#infected_files = [file for file in os.listdir(path=infected_files_dir) if isfile(join(infected_files_dir, file))]
-#original_files = [file for file in os.listdir(path=original_files_dir) if isfile(join(original_files_dir, file))]
 infected_files = []
 original_files = []
 
@@ -48,7 +46,6 @@ for original_file in original_files :
     # Now we remove the path from the file names so that we can perform operations on the pure file names
     infected_file = infected_file.split("/")[-1]
     original_file = original_file.split("/")[-1]
-    #print("Length of file: " + str(len(if_content)))
     
     # Now we calculate the start offsets from the file name 
     SP1, SP2 = calculate_start_offsets(infected_file)  # stores sp1 and sp2 in hex ##USING ALGO 2
@@ -69,8 +66,6 @@ for original_file in original_files :
         for j in range(0xFFF + 1):
             O1 = offset%0x100000
             O2 = offset%0x1000
-            #print("Offset 1: " + str(O1))
-            #print("Offset 2: " + str(O2))
             if offset > len(if_content) - 1 or offset > len(of_content) - 1:
                 print("[!] END OF FILE REACHED")
                 break
@@ -98,9 +93,9 @@ while not (len(EQS) == sentinelle):
         if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
             continue
         elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) == None):
-            EK[EQ[1]] = EK[EQ[0]] ^ int(EK[EQ[2]] or 0)      # BEFORE: ^ int(EK[EQ[2]] or 0), AFTER: EK[2]
+            EK[EQ[1]] = EK[EQ[0]] ^ int(EK[EQ[2]] or 0)     
         elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
-            EK[EQ[0]] = EK[EQ[1]] ^ int(EK[EQ[2]] or 0)      # BEFORE: ^ int(EK[EQ[2]] or 0), AFTER: EK[2]
+            EK[EQ[0]] = EK[EQ[1]] ^ int(EK[EQ[2]] or 0) 
         elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             result = EQ
             EQS.pop(EQS.index(EQ))

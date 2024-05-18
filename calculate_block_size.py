@@ -1,10 +1,6 @@
 import sys
 import os
 
-#file = sys.argv[1]
-
-#print("Calculating data block size of file: " + file + "...")
-
 def calculate_block_size(file_path):
     file_size = os.path.getsize(file_path)
     nbs = 0
