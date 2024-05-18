@@ -17,7 +17,7 @@ infected_files_dir = "infected_files/"
 original_files_dir = "original_files/"
 
 # Get a list of all the infected (encrypted) files
-subdirs = ["21000/", "150000/", "501000/", "1000000/", "5000000/", "10000000/", "1000000000/"]
+subdirs = ["21000/"]#, "150000/", "501000/", "1000000/", "5000000/", "10000000/", "1000000000/"]
 infected_files = []
 original_files = []
 
@@ -27,10 +27,12 @@ for subdir in subdirs:
     original_files += [(subdir + file) for file in os.listdir(path=original_files_dir + subdir) if isfile(join(original_files_dir + subdir, file))]
 
 print("Starting decryption process...")
-
-EQS = {}
-# Iterate over the original files
+EQS = list()
+# Iterate 
+# over the original files
+stop = 500
 for original_file in original_files :
+    stop -= 1
     # Get the corresponding infected (encrypted) file
     infected_file = getInfectedFileFromOriginal(infected_files, original_file)
     print("File: " + original_file + " -> " + infected_file + "...")
@@ -49,12 +51,11 @@ for original_file in original_files :
     
     # Now we calculate the start offsets from the file name 
     SP1, SP2 = calculate_start_offsets(infected_file)  # stores sp1 and sp2 in hex ##USING ALGO 2
-
+    print(SP1,SP2)
     # Main algorithm
     iter = size//(0x1000 + nbs)
     print("Will run for " + str(iter) + " iterations (size//0x1000 + nbs) = (size//0x1000 + " + str(nbs) + ")")
     offset = 0
-    EQS = set()
     for i in range (iter + 1):
         print("Iteration " + str(i) + "/" + str(iter) + "...")
         if i == iter :
@@ -62,20 +63,20 @@ for original_file in original_files :
             ## If the last block size is more than 0x1000 bytes, 0x1000 bytes of the last block
             ## starting from the end of the file are encrypted. Otherwise the entire block is encrypted
             if size - 0x1000 > offset:
-                offset += size - offset - 0x1000
+                offset = size - offset - 0x1000            
         for j in range(0xFFF + 1):
             O1 = offset%0x100000
-            O2 = offset%0x1000
+            O2 = offset%0x400
             if offset > len(if_content) - 1 or offset > len(of_content) - 1:
                 print("[!] END OF FILE REACHED")
                 break
-            EQS.add((SP1 + O1, SP2 + O2, if_content[offset] ^ of_content[offset]))
+            tmp = (SP1 + O1, SP2 + O2, if_content[offset] ^ of_content[offset])
+            if not tmp in EQS:
+                EQS.append(tmp)
             offset += 1
         offset += nbs
-
-if EQS == {}:
-    print("No EQS found")
-    exit()
+    if stop == 0:
+        break
 
 EK = [None] * 0xA00000
 E = copy.deepcopy(list(EQS)[random.randint(0, len(EQS) - 1)])
@@ -87,19 +88,33 @@ result = None
 
 print("EQS LENGTH BEFORE SOLVE:", len(EQS))
 eqs_popped = 0
+for EQ in EQS:
+        if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
+            continue
+        elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) == None):
+            EK[EQ[1]] = EK[EQ[0]] ^ int(EQ[2])     
+        elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
+            EK[EQ[0]] = EK[EQ[1]] ^ int(EQ[2]) 
+        elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
+            result = EQ
+            EQS.pop(EQS.index(EQ))
+            eqs_popped += 1
+
 while not (len(EQS) == sentinelle):
     sentinelle = len(EQS)
     for EQ in EQS:
         if ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) == None):
             continue
         elif ((EK[EQ[0]]) != None)  and ((EK[EQ[1]]) == None):
-            EK[EQ[1]] = EK[EQ[0]] ^ int(EK[EQ[2]] or 0)     
+            EK[EQ[1]] = EK[EQ[0]] ^ int(EQ[2])     
         elif ((EK[EQ[0]]) == None)  and ((EK[EQ[1]]) != None):
-            EK[EQ[0]] = EK[EQ[1]] ^ int(EK[EQ[2]] or 0) 
+            EK[EQ[0]] = EK[EQ[1]] ^ int(EQ[2]) 
         elif ((EK[EQ[0]]) != None) and ((EK[EQ[1]]) != None):
             result = EQ
             EQS.pop(EQS.index(EQ))
             eqs_popped += 1
+            if eqs_popped % 100 == 0:
+                print("Number element poped = ",eqs_popped)
 
 print("EQS Length:", len(EQS))
 print("Amount of EQ popped:", eqs_popped)
@@ -126,16 +141,3 @@ with open("EQS.txt", "w") as f:
     for i in range(len(EQS)):
         f.write(str(EQS[i]) + "\n")
 
-duplicatesFirst = 0
-duplicatesSecond = 0
-seenFirst = list()
-seenSecond = list()
-for element in EQS:
-    if element[0] in seenFirst:
-        duplicatesFirst += 1
-    seenFirst.add(element[0])
-    if element[1] in seenSecond:
-        duplicatesSecond += 1
-    seenSecond.add(element[1])
-print("Nr. of duplicates in first column of EQS:", duplicatesFirst)
-print("Nr. of duplicates in second column of EQS:", duplicatesSecond)
