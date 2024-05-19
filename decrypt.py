@@ -51,7 +51,6 @@ for original_file in original_files :
     
     # Now we calculate the start offsets from the file name 
     SP1, SP2 = calculate_start_offsets(infected_file)  # stores sp1 and sp2 in hex ##USING ALGO 2
-    print(SP1,SP2)
     # Main algorithm
     iter = size//(0x1000 + nbs)
     print("Will run for " + str(iter) + " iterations (size//0x1000 + nbs) = (size//0x1000 + " + str(nbs) + ")")
