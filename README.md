@@ -7,7 +7,7 @@ Ransomware " (https://arxiv.org/pdf/2202.08477.pdf)
 
 
 ## How to run
-Sample of those file use for our test can be found at the following Google drive : [MENDO]
+Sample of those file use for our test can be found at the following Google drive : https://drive.google.com/drive/folders/1xXCEproQ8LHYVu6pQKIwis19RFkQjNnK?usp=sharing
 
 The first step is to create (or download with the link of our Google Drive), original files which is not infected. To do that you can run the code. 
 
