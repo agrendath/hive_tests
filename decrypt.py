@@ -27,7 +27,7 @@ for subdir in subdirs:
     original_files += [(subdir + file) for file in os.listdir(path=original_files_dir + subdir) if isfile(join(original_files_dir + subdir, file))]
 
 print("Starting decryption process...")
-EQS = list()
+EQS = set()
 # Iterate 
 # over the original files
 stop = 500
@@ -70,8 +70,7 @@ for original_file in original_files :
                 print("[!] END OF FILE REACHED")
                 break
             tmp = (SP1 + O1, SP2 + O2, if_content[offset] ^ of_content[offset])
-            if not tmp in EQS:
-                EQS.append(tmp)
+            EQS.add(tmp)
             offset += 1
         offset += nbs
     if stop == 0:
